@@ -74,3 +74,27 @@ Advantages of Using VGs in PPO
 ✅ Computationally efficient – Smaller feature sets compared to CNNs on images.
 ✅ Captures price structure – Graph-based relationships may be better than raw price changes.
 ✅ Generalizes better – Graphs can be trained on multiple markets and still work.
+
+
+
+Yes, the resulting matrix at each time step will have the same size and shape if the number of bars (n) in the window is fixed.
+Here's how it works:
+
+    Price Data to Graph:
+        If you take the last n bars of data (for example, 5 bars), you can compute the visibility graph based on these bars.
+    Graph Representation:
+        Visibility Graph essentially turns time-series data into a graph where each price point is a node.
+        The adjacency matrix of this graph will have dimensions n x n, where n is the number of bars in the window. This matrix will represent the connections (or visibility) between all the price points in the window.
+
+Why is the matrix size constant?
+
+    The adjacency matrix of a visibility graph depends on the number of data points in your window (n), so if you're always using the same number of bars (n), the graph structure (adjacency matrix) will always be the same size.
+    For example, if you use n = 5, the adjacency matrix will always be 5 x 5.
+
+Recap:
+
+    If you use n bars at each step, the resulting adjacency matrix for each time step will always be of size n x n, ensuring that the shape remains constant over time.
+
+So, if your agent receives a visibility graph as an observation at each step, you will have a consistent-size matrix for every step in training, making it computationally efficient and suitable for PPO training.
+
+If you want to combine multiple time windows (e.g., n = 5, 10, 20 bars), the observation at each time step would be a stack of these matrices, so their shape would be something like (n x n, m), where m is the number of time windows you want to combine.
